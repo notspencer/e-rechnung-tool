@@ -1,0 +1,56 @@
+{
+    "name": "@e-rechnung/api",
+    "version": "0.1.0",
+    "description": "Fastify API server for E-Rechnung Tool",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsx watch src/index.ts",
+        "start": "node dist/index.js",
+        "test": "vitest",
+        "test:coverage": "vitest --coverage",
+        "lint": "eslint src --ext .ts",
+        "lint:fix": "eslint src --ext .ts --fix",
+        "typecheck": "tsc --noEmit",
+        "clean": "rm -rf dist",
+        "db:migrate": "drizzle-kit migrate",
+        "db:studio": "drizzle-kit studio",
+        "db:generate": "drizzle-kit generate"
+    },
+    "dependencies": {
+        "@e-rechnung/core": "workspace:*",
+        "@e-rechnung/validator": "workspace:*",
+        "@e-rechnung/parse-xml": "workspace:*",
+        "@e-rechnung/storage-fs": "workspace:*",
+        "@e-rechnung/storage-s3": "workspace:*",
+        "@e-rechnung/mail-imap": "workspace:*",
+        "fastify": "^4.24.3",
+        "drizzle-orm": "^0.29.0",
+        "postgres": "^3.4.3",
+        "bcrypt": "^5.1.1",
+        "jsonwebtoken": "^9.0.2",
+        "pino": "^8.17.2",
+        "pino-pretty": "^10.3.1",
+        "zod": "^3.22.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.10.0",
+        "@types/bcrypt": "^5.0.2",
+        "@types/jsonwebtoken": "^9.0.5",
+        "typescript": "^5.3.3",
+        "vitest": "^1.0.4",
+        "tsx": "^4.6.2",
+        "drizzle-kit": "^0.20.4"
+    },
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist"
+    ]
+}

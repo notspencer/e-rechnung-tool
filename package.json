@@ -24,9 +24,13 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
     "typecheck": "pnpm -r typecheck",
     "clean": "pnpm -r clean && rm -rf node_modules",
+    "db:generate": "pnpm --filter @e-rechnung/api db:generate",
     "db:migrate": "pnpm --filter @e-rechnung/api db:migrate",
     "db:studio": "pnpm --filter @e-rechnung/api db:studio",
-    "cli": "pnpm --filter @e-rechnung/cli start"
+    "cli": "pnpm --filter @e-rechnung/cli start",
+    "validate": "pnpm --filter @e-rechnung/cli start validate",
+    "export": "pnpm --filter @e-rechnung/cli start export",
+    "analyze": "pnpm --filter @e-rechnung/cli start analyze"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
@@ -43,5 +47,9 @@
     "node": ">=20.0.0",
     "pnpm": ">=8.0.0"
   },
-  "packageManager": "pnpm@8.12.0"
+  "packageManager": "pnpm@8.12.0",
+  "dependencies": {
+    "@types/mailparser": "^3.4.6",
+    "fastify-plugin": "^5.1.0"
+  }
 }

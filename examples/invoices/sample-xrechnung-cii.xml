@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                          xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+                          xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:100">
+  
+  <!-- Document Context -->
+  <rsm:ExchangedDocumentContext>
+    <ram:GuidelineSpecifiedDocumentContextParameter>
+      <ram:ID>urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.3</ram:ID>
+    </ram:GuidelineSpecifiedDocumentContextParameter>
+  </rsm:ExchangedDocumentContext>
+  
+  <!-- Document Information -->
+  <rsm:ExchangedDocument>
+    <ram:ID>INV-2024-002</ram:ID>
+    <ram:TypeCode>380</ram:TypeCode>
+    <ram:IssueDateTime>
+      <udt:DateTimeString format="102">20240115</udt:DateTimeString>
+    </ram:IssueDateTime>
+  </rsm:ExchangedDocument>
+  
+  <!-- Supply Chain Trade Transaction -->
+  <rsm:SupplyChainTradeTransaction>
+    
+    <!-- Header Trade Agreement -->
+    <ram:ApplicableHeaderTradeAgreement>
+      <ram:BuyerReference>BUYER-REF-001</ram:BuyerReference>
+      <ram:SellerTradeParty>
+        <ram:Name>ACME Consulting GmbH</ram:Name>
+        <ram:PostalTradeAddress>
+          <ram:PostcodeCode>10115</ram:PostcodeCode>
+          <ram:LineOne>Musterstraße 123</ram:LineOne>
+          <ram:CityName>Berlin</ram:CityName>
+          <ram:CountryID>DE</ram:CountryID>
+        </ram:PostalTradeAddress>
+        <ram:SpecifiedTaxRegistration>
+          <ram:ID schemeID="VA">DE123456789</ram:ID>
+        </ram:SpecifiedTaxRegistration>
+        <ram:DefinedTradeContact>
+          <ram:PersonName>Contact Person</ram:PersonName>
+          <ram:EmailAddressURI>info@acme-consulting.de</ram:EmailAddressURI>
+          <ram:TelephoneUniversalCommunication>
+            <ram:CompleteNumber>+493012345678</ram:CompleteNumber>
+          </ram:TelephoneUniversalCommunication>
+        </ram:DefinedTradeContact>
+      </ram:SellerTradeParty>
+      
+      <ram:BuyerTradeParty>
+        <ram:Name>Beta Corporation Ltd</ram:Name>
+        <ram:PostalTradeAddress>
+          <ram:PostcodeCode>80331</ram:PostcodeCode>
+          <ram:LineOne>Business Avenue 456</ram:LineOne>
+          <ram:CityName>Munich</ram:CityName>
+          <ram:CountryID>DE</ram:CountryID>
+        </ram:PostalTradeAddress>
+        <ram:SpecifiedTaxRegistration>
+          <ram:ID schemeID="VA">DE987654321</ram:ID>
+        </ram:SpecifiedTaxRegistration>
+      </ram:BuyerTradeParty>
+      
+      <ram:ApplicableTradeAgreement>
+        <ram:BuyerOrderReferencedDocument>
+          <ram:IssuerAssignedID>PO-2024-001</ram:IssuerAssignedID>
+        </ram:BuyerOrderReferencedDocument>
+      </ram:ApplicableTradeAgreement>
+    </ram:ApplicableHeaderTradeAgreement>
+    
+    <!-- Header Trade Delivery -->
+    <ram:ApplicableHeaderTradeDelivery>
+      <ram:ActualDeliverySupplyChainEvent>
+        <ram:OccurrenceDateTime>
+          <udt:DateTimeString format="102">20240115</udt:DateTimeString>
+        </ram:OccurrenceDateTime>
+      </ram:ActualDeliverySupplyChainEvent>
+    </ram:ApplicableHeaderTradeDelivery>
+    
+    <!-- Header Trade Settlement -->
+    <ram:ApplicableHeaderTradeSettlement>
+      <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+      <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+        <ram:TaxBasisTotalAmount currencyID="EUR">2000.00</ram:TaxBasisTotalAmount>
+        <ram:TaxTotalAmount currencyID="EUR">380.00</ram:TaxTotalAmount>
+        <ram:GrandTotalAmount currencyID="EUR">2380.00</ram:GrandTotalAmount>
+      </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+      
+      <ram:SpecifiedTradePaymentTerms>
+        <ram:Description>Payment due within 30 days</ram:Description>
+        <ram:DueDateDateTime>
+          <udt:DateTimeString format="102">20240214</udt:DateTimeString>
+        </ram:DueDateDateTime>
+      </ram:SpecifiedTradePaymentTerms>
+    </ram:ApplicableHeaderTradeSettlement>
+    
+    <!-- Line Items -->
+    <ram:IncludedSupplyChainTradeLineItem>
+      <ram:AssociatedDocumentLineDocument>
+        <ram:LineID>1</ram:LineID>
+      </ram:AssociatedDocumentLineDocument>
+      
+      <ram:SpecifiedTradeProduct>
+        <ram:Name>Project Consulting</ram:Name>
+        <ram:Description>Consulting services for project implementation</ram:Description>
+      </ram:SpecifiedTradeProduct>
+      
+      <ram:SpecifiedLineTradeAgreement>
+        <ram:NetPriceProductTradePrice>
+          <ram:ChargeAmount currencyID="EUR">50.00</ram:ChargeAmount>
+        </ram:NetPriceProductTradePrice>
+      </ram:SpecifiedLineTradeAgreement>
+      
+      <ram:SpecifiedLineTradeDelivery>
+        <ram:BilledQuantity unitCode="HUR">40</ram:BilledQuantity>
+      </ram:SpecifiedLineTradeDelivery>
+      
+      <ram:SpecifiedLineTradeSettlement>
+        <ram:LineTotalAmount currencyID="EUR">2000.00</ram:LineTotalAmount>
+        
+        <ram:ApplicableTradeTax>
+          <ram:TypeCode>VAT</ram:TypeCode>
+          <ram:CategoryCode>S</ram:CategoryCode>
+          <ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>
+          <ram:CalculatedAmount currencyID="EUR">380.00</ram:CalculatedAmount>
+        </ram:ApplicableTradeTax>
+      </ram:SpecifiedLineTradeSettlement>
+    </ram:IncludedSupplyChainTradeLineItem>
+    
+  </rsm:SupplyChainTradeTransaction>
+  
+</rsm:CrossIndustryInvoice>
