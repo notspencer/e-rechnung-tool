@@ -110,17 +110,43 @@ Built for **micro/small SMEs** (Handwerk, local services) with **accountants and
 - **PostgreSQL 15+** (local or Docker)
 - **S3-compatible storage** (AWS S3, MinIO, or use Local FS adapter)
 
-### Installation
+### Quick Start
 
 ```bash
 # Clone the repo
 git clone https://github.com/notspencer/e-rechnung-tool.git
 cd e-rechnung-tool
 
+# Run the setup script
+./scripts/setup-dev.sh
+
+# Start development services (optional)
+docker-compose -f scripts/docker-compose.dev.yml up -d
+
+# Set up environment
+cp .env.example .env
+# Edit .env with your configuration
+
+# Run database migrations
+pnpm db:migrate
+
+# Start development server
+pnpm dev
+```
+
+### Manual Installation
+
+```bash
 # Install dependencies
 pnpm install
 
-# Set up environment (copy template)
+# Build all packages
+pnpm build
+
+# Run tests
+pnpm test
+
+# Set up environment
 cp .env.example .env
 # Edit .env with your Postgres/S3 credentials
 
@@ -129,6 +155,31 @@ pnpm db:migrate
 
 # Start development server
 pnpm dev
+```
+
+### Development Services
+
+For local development, you can use Docker Compose to run supporting services:
+
+```bash
+# Start PostgreSQL, MinIO, and Redis
+docker-compose -f scripts/docker-compose.dev.yml up -d
+
+# Stop services
+docker-compose -f scripts/docker-compose.dev.yml down
+```
+
+### CLI Usage
+
+```bash
+# Validate an invoice file
+pnpm validate examples/invoices/sample-xrechnung-ubl.xml
+
+# Export invoices
+pnpm export --from 2024-01-01 --to 2024-12-31
+
+# Analyze invoice data
+pnpm analyze --from 2024-01-01 --to 2024-12-31
 ```
 
 ### Quick Validation (CLI)
@@ -281,6 +332,29 @@ This project is licensed under the **Apache License 2.0**. See [LICENSE](LICENSE
 - **Issues**: [GitHub Issues](https://github.com/notspencer/e-rechnung-tool/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/notspencer/e-rechnung-tool/discussions)
 - **Email**: support@e-rechnung.example (for commercial inquiries)
+
+## Project Status
+
+✅ **MVP Implementation Complete**
+
+The E-Rechnung Tool MVP is now fully implemented with:
+
+- **Core Types & Validation**: Complete EN 16931 validation engine with 20+ rules
+- **XML Parsing**: Support for XRechnung UBL/CII, ZUGFeRD, and Factur-X formats
+- **Storage Adapters**: Local filesystem and S3-compatible storage
+- **API Server**: Fastify-based REST API with authentication and RLS
+- **CLI Tools**: Command-line interface for validation, export, and analysis
+- **Database Schema**: Postgres schema with Drizzle ORM and row-level security
+- **Test Suite**: Comprehensive tests for all packages
+- **Documentation**: Complete architecture and API documentation
+
+### Next Steps
+
+1. **Deploy to production** with your preferred hosting provider
+2. **Configure email routing** for automatic invoice ingestion
+3. **Set up monitoring** and alerting for the validation pipeline
+4. **Train users** on the web interface and CLI tools
+5. **Monitor KPIs** and iterate based on real-world usage
 
 ---
 

@@ -1,0 +1,89 @@
+{
+    "period": {
+        "from": "2024-01-01",
+        "to": "2024-01-31"
+    },
+    "totals": {
+        "invoicesReceived": 1247,
+        "eInvoices": 1112,
+        "otherInvoices": 135,
+        "archived": 1189
+    },
+    "autoPassRate": 94.2,
+    "medianTimeToArchiveMinutes": 4.2,
+    "p90TimeToArchiveMinutes": 8.7,
+    "supplierConversion": {
+        "suppliersWithOtherInvoices": 45,
+        "convertedToEInvoice": 12,
+        "conversionRate": 26.7
+    },
+    "topSuppliers": [
+        {
+            "name": "ACME Consulting GmbH",
+            "invoiceCount": 245,
+            "eInvoiceCount": 238,
+            "conversionRate": 97.1
+        },
+        {
+            "name": "Beta Corporation Ltd",
+            "invoiceCount": 189,
+            "eInvoiceCount": 156,
+            "conversionRate": 82.5
+        },
+        {
+            "name": "Gamma Ltd",
+            "invoiceCount": 156,
+            "eInvoiceCount": 134,
+            "conversionRate": 85.9
+        }
+    ],
+    "commonIssues": [
+        {
+            "code": "PAY-01",
+            "description": "Missing payment instructions",
+            "count": 287,
+            "percentage": 23.0
+        },
+        {
+            "code": "REF-01",
+            "description": "Missing purchase order reference",
+            "count": 224,
+            "percentage": 18.0
+        },
+        {
+            "code": "CONT-01",
+            "description": "Missing seller contact information",
+            "count": 156,
+            "percentage": 12.5
+        },
+        {
+            "code": "SUM-02",
+            "description": "Totals calculation mismatch",
+            "count": 25,
+            "percentage": 2.0
+        }
+    ],
+    "monthlyTrends": [
+        {
+            "month": "2024-01",
+            "invoicesReceived": 1247,
+            "eInvoices": 1112,
+            "autoPassRate": 94.2,
+            "medianProcessingTime": 4.2
+        },
+        {
+            "month": "2023-12",
+            "invoicesReceived": 1189,
+            "eInvoices": 1056,
+            "autoPassRate": 92.8,
+            "medianProcessingTime": 4.8
+        },
+        {
+            "month": "2023-11",
+            "invoicesReceived": 1156,
+            "eInvoices": 1023,
+            "autoPassRate": 91.5,
+            "medianProcessingTime": 5.1
+        }
+    ]
+}

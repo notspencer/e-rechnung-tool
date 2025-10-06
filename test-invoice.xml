@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2">
+  <ID>INV-2024-001</ID>
+  <IssueDate>2024-01-15</IssueDate>
+  <DocumentCurrencyCode>EUR</DocumentCurrencyCode>
+  <AccountingSupplierParty>
+    <Party>
+      <PartyName>
+        <Name>ACME Consulting GmbH</Name>
+      </PartyName>
+      <PostalAddress>
+        <CountryIdentificationCode>DE</CountryIdentificationCode>
+        <CityName>Berlin</CityName>
+      </PostalAddress>
+      <PartyTaxScheme>
+        <CompanyID>DE123456789</CompanyID>
+      </PartyTaxScheme>
+    </Party>
+  </AccountingSupplierParty>
+  <AccountingCustomerParty>
+    <Party>
+      <PartyName>
+        <Name>Beta Corporation Ltd</Name>
+      </PartyName>
+      <PostalAddress>
+        <CountryIdentificationCode>DE</CountryIdentificationCode>
+        <CityName>Munich</CityName>
+      </PostalAddress>
+    </Party>
+  </AccountingCustomerParty>
+  <LegalMonetaryTotal>
+    <TaxExclusiveAmount currencyID="EUR">2000.00</TaxExclusiveAmount>
+    <TaxInclusiveAmount currencyID="EUR">2380.00</TaxInclusiveAmount>
+    <PayableAmount currencyID="EUR">2380.00</PayableAmount>
+  </LegalMonetaryTotal>
+  <InvoiceLine>
+    <ID>1</ID>
+    <InvoicedQuantity unitCode="HUR">40</InvoicedQuantity>
+    <LineExtensionAmount currencyID="EUR">2000.00</LineExtensionAmount>
+    <Item>
+      <Description>Consulting services</Description>
+      <Name>Project Consulting</Name>
+    </Item>
+    <Price>
+      <PriceAmount currencyID="EUR">50.00</PriceAmount>
+    </Price>
+  </InvoiceLine>
+</Invoice>
