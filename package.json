@@ -1,0 +1,47 @@
+{
+  "name": "e-rechnung-tool",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-core TypeScript platform for receiving, validating, and archiving e-invoices (EN 16931)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/notspencer/e-rechnung-tool.git"
+  },
+  "license": "Apache-2.0",
+  "author": "E-Rechnung Tool Contributors",
+  "workspaces": [
+    "packages/*",
+    "packages/adapters/*"
+  ],
+  "scripts": {
+    "dev": "pnpm --filter @e-rechnung/api dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "test:coverage": "pnpm -r test:coverage",
+    "lint": "pnpm -r lint",
+    "lint:fix": "pnpm -r lint:fix",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\"",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r clean && rm -rf node_modules",
+    "db:migrate": "pnpm --filter @e-rechnung/api db:migrate",
+    "db:studio": "pnpm --filter @e-rechnung/api db:studio",
+    "cli": "pnpm --filter @e-rechnung/cli start"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.29.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.12.0"
+}
