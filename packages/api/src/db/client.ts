@@ -14,7 +14,6 @@ if (!connectionString) {
 
 const client = postgres(connectionString, {
     max: parseInt(process.env.DATABASE_POOL_MAX || '10'),
-    min: parseInt(process.env.DATABASE_POOL_MIN || '2'),
 });
 
 // Create drizzle instance

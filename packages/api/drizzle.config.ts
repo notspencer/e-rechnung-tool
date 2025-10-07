@@ -7,9 +7,9 @@ import type { Config } from 'drizzle-kit';
 export default {
     schema: './src/db/schema.ts',
     out: './drizzle',
-    driver: 'pg',
+    dialect: 'postgresql',
     dbCredentials: {
-        connectionString: process.env.DATABASE_URL!,
+        url: process.env.DATABASE_URL || 'postgresql://einvoice:einvoice@localhost:5432/einvoice',
     },
     verbose: true,
     strict: true,

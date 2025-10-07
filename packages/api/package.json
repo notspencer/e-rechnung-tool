@@ -16,32 +16,35 @@
         "clean": "rm -rf dist",
         "db:migrate": "drizzle-kit migrate",
         "db:studio": "drizzle-kit studio",
-        "db:generate": "drizzle-kit generate"
+        "db:generate": "drizzle-kit generate:pg"
     },
     "dependencies": {
         "@e-rechnung/core": "workspace:*",
-        "@e-rechnung/validator": "workspace:*",
+        "@e-rechnung/mail-imap": "workspace:*",
         "@e-rechnung/parse-xml": "workspace:*",
         "@e-rechnung/storage-fs": "workspace:*",
         "@e-rechnung/storage-s3": "workspace:*",
-        "@e-rechnung/mail-imap": "workspace:*",
-        "fastify": "^4.24.3",
+        "@e-rechnung/validator": "workspace:*",
+        "@fastify/multipart": "^7.0.0",
+        "@fastify/static": "^6.0.0",
+        "dotenv": "^17.2.3",
         "drizzle-orm": "^0.29.0",
-        "postgres": "^3.4.3",
-        "bcrypt": "^5.1.1",
+        "fastify": "^4.24.3",
         "jsonwebtoken": "^9.0.2",
         "pino": "^8.17.2",
         "pino-pretty": "^10.3.1",
+        "postgres": "^3.4.3",
         "zod": "^3.22.4"
     },
     "devDependencies": {
-        "@types/node": "^20.10.0",
         "@types/bcrypt": "^5.0.2",
         "@types/jsonwebtoken": "^9.0.5",
-        "typescript": "^5.3.3",
-        "vitest": "^1.0.4",
+        "@types/node": "^20.10.0",
+        "bcrypt": "^5.1.1",
+        "drizzle-kit": "^0.20.18",
         "tsx": "^4.6.2",
-        "drizzle-kit": "^0.20.4"
+        "typescript": "^5.3.3",
+        "vitest": "^1.6.1"
     },
     "exports": {
         ".": {
