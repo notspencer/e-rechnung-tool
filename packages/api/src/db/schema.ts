@@ -2,7 +2,7 @@
  * Database schema definitions using Drizzle ORM
  */
 
-import { pgTable, uuid, text, timestamp, numeric, jsonb, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, timestamp, numeric, jsonb, pgEnum, boolean } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Enums
@@ -29,6 +29,7 @@ export const tenants = pgTable('tenants', {
     name: text('name').notNull(),
     emailAddress: text('email_address').unique(),
     emailToken: text('email_token'),
+    claimedDomains: jsonb('claimed_domains').$type<string[]>().default([]),
     createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
@@ -36,6 +37,8 @@ export const users = pgTable('users', {
     id: uuid('id').primaryKey().defaultRandom(),
     email: text('email').notNull().unique(),
     passwordHash: text('password_hash').notNull(),
+    emailVerifiedAt: timestamp('email_verified_at'),
+    lastLoginAt: timestamp('last_login_at'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
@@ -122,6 +125,17 @@ export const exports = pgTable('exports', {
     completedAt: timestamp('completed_at'),
 });
 
+export const refreshTokens = pgTable('refresh_tokens', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    tenantId: uuid('tenant_id').notNull().references(() => tenants.id, { onDelete: 'cascade' }),
+    familyId: uuid('family_id').notNull().defaultRandom(),
+    tokenHash: text('token_hash').notNull(),
+    revoked: boolean('revoked').notNull().default(false),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    expiresAt: timestamp('expires_at').notNull(),
+});
+
 // Relations
 export const tenantsRelations = relations(tenants, ({ many }) => ({
     users: many(userTenants),
@@ -193,6 +207,17 @@ export const eventsRelations = relations(events, ({ one }) => ({
 export const exportsRelations = relations(exports, ({ one }) => ({
     tenant: one(tenants, {
         fields: [exports.tenantId],
+        references: [tenants.id],
+    }),
+}));
+
+export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
+    user: one(users, {
+        fields: [refreshTokens.userId],
+        references: [users.id],
+    }),
+    tenant: one(tenants, {
+        fields: [refreshTokens.tenantId],
         references: [tenants.id],
     }),
 }));

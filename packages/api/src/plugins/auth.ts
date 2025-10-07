@@ -6,7 +6,9 @@ import { FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { db, users, userTenants, apiKeys } from '../db/client.js';
+import { env } from '../config/env.js';
+import { db } from '../db/client.js';
+import { users, userTenants, apiKeys } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 
 declare module 'fastify' {
@@ -26,11 +28,7 @@ declare module 'fastify' {
 }
 
 export const authPlugin: FastifyPluginAsync = fp(async (fastify) => {
-    // JWT secret
-    const jwtSecret = process.env.JWT_SECRET;
-    if (!jwtSecret) {
-        throw new Error('JWT_SECRET environment variable is required');
-    }
+    // JWT secret is validated in env module
 
     // Add authentication hook
     fastify.addHook('onRequest', async (request, reply) => {
@@ -43,7 +41,7 @@ export const authPlugin: FastifyPluginAsync = fp(async (fastify) => {
         const token = extractToken(request);
         if (token) {
             try {
-                const decoded = jwt.verify(token, jwtSecret) as any;
+                const decoded = jwt.verify(token, env.JWT_SECRET) as any;
 
                 // Get user with tenant info
                 const userWithTenant = await db
@@ -116,7 +114,10 @@ export const authPlugin: FastifyPluginAsync = fp(async (fastify) => {
 function isPublicRoute(url: string): boolean {
     const publicRoutes = [
         '/health',
+        '/api/auth/register',
         '/api/auth/login',
+        '/api/auth/refresh',
+        '/api/auth/verify-email',
         '/', // Root path for web interface
         '/index.html',
         '/static/', // Static assets
@@ -153,7 +154,7 @@ function extractApiKey(request: any): { prefix: string; secret: string } | null 
 
 // Helper function to hash passwords
 export async function hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, parseInt(process.env.BCRYPT_ROUNDS || '12'));
+    return bcrypt.hash(password, env.BCRYPT_ROUNDS);
 }
 
 // Helper function to verify passwords

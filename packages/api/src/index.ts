@@ -2,39 +2,34 @@
  * Fastify API server for E-Rechnung Tool
  */
 
-import 'dotenv/config';
+import { env } from './config/env.js';
 import Fastify from 'fastify';
 import { loggingPlugin } from './plugins/logging.js';
 import { authPlugin } from './plugins/auth.js';
 import { rlsPlugin } from './plugins/rls.js';
+import { authRoutes } from './routes/auth.js';
 
-// Extend Fastify types for multipart
-declare module 'fastify' {
-    interface FastifyRequest {
-        file(): Promise<{
-            filename: string;
-            mimetype: string;
-            toBuffer(): Promise<Buffer>;
-        }>;
-    }
-}
+// Multipart types are provided by @fastify/multipart
 
 // Create Fastify instance
 const fastify = Fastify({
     logger: {
-        level: process.env.LOG_LEVEL || 'info',
+        level: env.LOG_LEVEL,
     },
 });
 
 // Register plugins
 fastify.register(loggingPlugin);
-fastify.register(require('@fastify/multipart'));
-fastify.register(require('@fastify/static'), {
-    root: require('path').join(__dirname, '../public'),
+fastify.register(import('@fastify/multipart'));
+fastify.register(import('@fastify/static'), {
+    root: new URL('../public', import.meta.url).pathname,
     prefix: '/',
 });
 fastify.register(authPlugin);
 fastify.register(rlsPlugin);
+
+// Register auth routes
+fastify.register(authRoutes, { prefix: '/api/auth' });
 
 // Health check endpoint
 fastify.get('/health', async () => {
@@ -47,11 +42,6 @@ fastify.get('/health', async () => {
 
 // API routes (to be implemented)
 fastify.register(async function (fastify) {
-    // Auth routes
-    fastify.post('/api/auth/login', async () => {
-        // TODO: Implement login
-        return { message: 'Login endpoint - TODO' };
-    });
 
     // Invoice routes
     fastify.post('/api/invoices/upload', async (request, reply) => {
@@ -631,19 +621,16 @@ fastify.setErrorHandler(async (error, request, reply) => {
 
     reply.status(500).send({
         error: 'Internal Server Error',
-        message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
+        message: env.NODE_ENV === 'development' ? error.message : 'Something went wrong',
     });
 });
 
 // Start server
 const start = async () => {
     try {
-        const port = parseInt(process.env.PORT || '3000');
-        const host = process.env.HOST || '0.0.0.0';
+        await fastify.listen({ port: env.PORT, host: env.HOST });
 
-        await fastify.listen({ port, host });
-
-        console.log(`🚀 E-Rechnung API server running on http://${host}:${port}`);
+        console.log(`🚀 E-Rechnung API server running on http://${env.HOST}:${env.PORT}`);
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);
