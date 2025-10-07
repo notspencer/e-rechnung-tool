@@ -7,7 +7,7 @@ import fp from 'fastify-plugin';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { db, users, userTenants, apiKeys } from '../db/client.js';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 declare module 'fastify' {
     interface FastifyRequest {
@@ -60,13 +60,15 @@ export const authPlugin: FastifyPluginAsync = fp(async (fastify) => {
 
                 if (userWithTenant.length > 0) {
                     const user = userWithTenant[0];
-                    request.user = {
-                        id: user.userId,
-                        email: user.email,
-                        tenantId: user.tenantId,
-                        role: user.role,
-                    };
-                    return;
+                    if (user) {
+                        request.user = {
+                            id: user.userId,
+                            email: user.email,
+                            tenantId: user.tenantId,
+                            role: user.role,
+                        };
+                        return;
+                    }
                 }
             } catch (error) {
                 // Invalid token, try API key
@@ -84,22 +86,24 @@ export const authPlugin: FastifyPluginAsync = fp(async (fastify) => {
 
             if (keyRecord.length > 0) {
                 const key = keyRecord[0];
-                const isValid = await bcrypt.compare(apiKey.secret, key.secretHash);
+                if (key) {
+                    const isValid = await bcrypt.compare(apiKey.secret, key.secretHash);
 
-                if (isValid) {
-                    request.apiKey = {
-                        id: key.id,
-                        tenantId: key.tenantId,
-                        scopes: key.scopes,
-                    };
+                    if (isValid) {
+                        request.apiKey = {
+                            id: key.id,
+                            tenantId: key.tenantId,
+                            scopes: key.scopes,
+                        };
 
-                    // Update last used timestamp
-                    await db
-                        .update(apiKeys)
-                        .set({ lastUsedAt: new Date() })
-                        .where(eq(apiKeys.id, key.id));
+                        // Update last used timestamp
+                        await db
+                            .update(apiKeys)
+                            .set({ lastUsedAt: new Date() })
+                            .where(eq(apiKeys.id, key.id));
 
-                    return;
+                        return;
+                    }
                 }
             }
         }
@@ -113,6 +117,9 @@ function isPublicRoute(url: string): boolean {
     const publicRoutes = [
         '/health',
         '/api/auth/login',
+        '/', // Root path for web interface
+        '/index.html',
+        '/static/', // Static assets
     ];
 
     return publicRoutes.some(route => url.startsWith(route));

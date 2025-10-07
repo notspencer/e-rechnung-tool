@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Rechnung Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+            color: #374151;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .results {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+            margin-top: 15px;
+        }
+
+        .results pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 12px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .file-upload {
+            border: 2px dashed #d1d5db;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .file-upload:hover {
+            border-color: #2563eb;
+        }
+
+        .file-upload.dragover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .auth-section {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .auth-section h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .auth-section p {
+            color: #92400e;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>E-Rechnung Tool</h1>
+            <p>Invoice management system for German e-invoices (EN 16931)</p>
+        </div>
+
+        <div class="auth-section">
+            <h3>🔐 Authentication Required</h3>
+            <p>All API endpoints require authentication. For development, you can test the health endpoint which is
+                public.</p>
+        </div>
+
+        <div class="section">
+            <h2>🏥 Health Check</h2>
+            <p>Test the API server status</p>
+            <button class="btn" onclick="testHealth()">Test Health</button>
+            <div id="health-result" class="results hidden"></div>
+        </div>
+
+        <div class="section">
+            <h2>📤 Upload Invoice</h2>
+            <p>Upload XML or PDF invoice files</p>
+            <div class="form-group">
+                <div class="file-upload" id="file-upload" onclick="document.getElementById('file-input').click()">
+                    <p>Click to select file or drag and drop</p>
+                    <p style="font-size: 12px; color: #666;">Supports XML and PDF files</p>
+                </div>
+                <input type="file" id="file-input" accept=".xml,.pdf" style="display: none;">
+            </div>
+            <button class="btn" onclick="uploadFile()" id="upload-btn" disabled>Upload File</button>
+            <div id="upload-result" class="results hidden"></div>
+        </div>
+
+        <div class="section">
+            <h2>📊 Analytics</h2>
+            <p>View invoice analytics and summary</p>
+            <div class="form-group">
+                <label for="from-date">From Date:</label>
+                <input type="date" id="from-date" value="2024-01-01">
+            </div>
+            <div class="form-group">
+                <label for="to-date">To Date:</label>
+                <input type="date" id="to-date" value="2024-12-31">
+            </div>
+            <button class="btn" onclick="getAnalytics()">Get Analytics</button>
+            <div id="analytics-result" class="results hidden"></div>
+        </div>
+
+        <div class="section">
+            <h2>📋 Invoice Management</h2>
+            <p>Manage invoices and exports</p>
+            <div class="form-group">
+                <label for="invoice-id">Invoice ID:</label>
+                <input type="text" id="invoice-id" placeholder="Enter invoice ID">
+            </div>
+            <button class="btn" onclick="getInvoice()">Get Invoice</button>
+            <button class="btn btn-secondary" onclick="archiveInvoice()">Archive Invoice</button>
+            <div id="invoice-result" class="results hidden"></div>
+        </div>
+
+        <div class="section">
+            <h2>📤 Export Management</h2>
+            <p>Create and manage data exports</p>
+            <div class="form-group">
+                <label for="export-format">Export Format:</label>
+                <select id="export-format">
+                    <option value="csv">CSV</option>
+                    <option value="json">JSON</option>
+                    <option value="xlsx">Excel</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="export-from-date">From Date:</label>
+                <input type="date" id="export-from-date" value="2024-01-01">
+            </div>
+            <div class="form-group">
+                <label for="export-to-date">To Date:</label>
+                <input type="date" id="export-to-date" value="2024-12-31">
+            </div>
+            <button class="btn" onclick="createExport()">Create Export</button>
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="export-id">Export ID:</label>
+                <input type="text" id="export-id" placeholder="Enter export ID">
+            </div>
+            <button class="btn btn-secondary" onclick="getExport()">Get Export Status</button>
+            <div id="export-result" class="results hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+        let selectedFile = null;
+
+        // File upload handling
+        document.getElementById('file-input').addEventListener('change', function (e) {
+            selectedFile = e.target.files[0];
+            if (selectedFile) {
+                document.getElementById('file-upload').innerHTML = `
+                    <p><strong>Selected:</strong> ${selectedFile.name}</p>
+                    <p style="font-size: 12px; color: #666;">Size: ${(selectedFile.size / 1024).toFixed(1)} KB</p>
+                `;
+                document.getElementById('upload-btn').disabled = false;
+            }
+        });
+
+        // Drag and drop handling
+        const fileUpload = document.getElementById('file-upload');
+        fileUpload.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            fileUpload.classList.add('dragover');
+        });
+
+        fileUpload.addEventListener('dragleave', function (e) {
+            e.preventDefault();
+            fileUpload.classList.remove('dragover');
+        });
+
+        fileUpload.addEventListener('drop', function (e) {
+            e.preventDefault();
+            fileUpload.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                selectedFile = files[0];
+                document.getElementById('file-input').files = files;
+                document.getElementById('file-upload').innerHTML = `
+                    <p><strong>Selected:</strong> ${selectedFile.name}</p>
+                    <p style="font-size: 12px; color: #666;">Size: ${(selectedFile.size / 1024).toFixed(1)} KB</p>
+                `;
+                document.getElementById('upload-btn').disabled = false;
+            }
+        });
+
+        async function testHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                showResult('health-result', data, 'success');
+            } catch (error) {
+                showResult('health-result', { error: error.message }, 'error');
+            }
+        }
+
+        async function uploadFile() {
+            if (!selectedFile) {
+                showResult('upload-result', { error: 'No file selected' }, 'error');
+                return;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                const response = await fetch(`${API_BASE}/api/invoices/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult('upload-result', data, 'success');
+                } else {
+                    showResult('upload-result', data, 'error');
+                }
+            } catch (error) {
+                showResult('upload-result', { error: error.message }, 'error');
+            }
+        }
+
+        async function getAnalytics() {
+            try {
+                const fromDate = document.getElementById('from-date').value;
+                const toDate = document.getElementById('to-date').value;
+
+                const response = await fetch(`${API_BASE}/api/analytics/summary?from_date=${fromDate}&to_date=${toDate}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult('analytics-result', data, 'success');
+                } else {
+                    showResult('analytics-result', data, 'error');
+                }
+            } catch (error) {
+                showResult('analytics-result', { error: error.message }, 'error');
+            }
+        }
+
+        async function getInvoice() {
+            const invoiceId = document.getElementById('invoice-id').value;
+            if (!invoiceId) {
+                showResult('invoice-result', { error: 'Invoice ID is required' }, 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/invoices/${invoiceId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult('invoice-result', data, 'success');
+                } else {
+                    showResult('invoice-result', data, 'error');
+                }
+            } catch (error) {
+                showResult('invoice-result', { error: error.message }, 'error');
+            }
+        }
+
+        async function archiveInvoice() {
+            const invoiceId = document.getElementById('invoice-id').value;
+            if (!invoiceId) {
+                showResult('invoice-result', { error: 'Invoice ID is required' }, 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/invoices/${invoiceId}/archive`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult('invoice-result', data, 'success');
+                } else {
+                    showResult('invoice-result', data, 'error');
+                }
+            } catch (error) {
+                showResult('invoice-result', { error: error.message }, 'error');
+            }
+        }
+
+        async function createExport() {
+            try {
+                const format = document.getElementById('export-format').value;
+                const fromDate = document.getElementById('export-from-date').value;
+                const toDate = document.getElementById('export-to-date').value;
+
+                const response = await fetch(`${API_BASE}/api/exports`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        format,
+                        fromDate,
+                        toDate
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult('export-result', data, 'success');
+                    // Auto-fill export ID for testing
+                    if (data.export && data.export.id) {
+                        document.getElementById('export-id').value = data.export.id;
+                    }
+                } else {
+                    showResult('export-result', data, 'error');
+                }
+            } catch (error) {
+                showResult('export-result', { error: error.message }, 'error');
+            }
+        }
+
+        async function getExport() {
+            const exportId = document.getElementById('export-id').value;
+            if (!exportId) {
+                showResult('export-result', { error: 'Export ID is required' }, 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/exports/${exportId}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    showResult('export-result', data, 'success');
+                } else {
+                    showResult('export-result', data, 'error');
+                }
+            } catch (error) {
+                showResult('export-result', { error: error.message }, 'error');
+            }
+        }
+
+        function showResult(elementId, data, type) {
+            const element = document.getElementById(elementId);
+            element.className = `results ${type}`;
+            element.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            element.classList.remove('hidden');
+        }
+    </script>
+</body>
+
+</html>

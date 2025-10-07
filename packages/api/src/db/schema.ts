@@ -2,7 +2,7 @@
  * Database schema definitions using Drizzle ORM
  */
 
-import { pgTable, uuid, text, timestamp, numeric, jsonb, boolean, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, timestamp, numeric, jsonb, pgEnum } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Enums

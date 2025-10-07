@@ -1,48 +1,13 @@
 /**
- * Logging plugin for Fastify using Pino
+ * Simple logging plugin for Fastify
  */
 
 import { FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
 
 export const loggingPlugin: FastifyPluginAsync = fp(async (fastify) => {
-    // Configure Pino logger
-    fastify.register(require('@fastify/pino'), {
-        level: process.env.LOG_LEVEL || 'info',
-        redact: {
-            paths: [
-                'email',
-                'buyer.email',
-                'seller.email',
-                'payment.iban',
-                'req.headers.authorization',
-                'password',
-                'passwordHash',
-            ],
-            censor: '[REDACTED]',
-        },
-        serializers: {
-            req: (req: any) => ({
-                method: req.method,
-                url: req.url,
-                headers: {
-                    'user-agent': req.headers['user-agent'],
-                    'content-type': req.headers['content-type'],
-                },
-                remoteAddress: req.ip,
-                remotePort: req.connection?.remotePort,
-            }),
-            res: (res: any) => ({
-                statusCode: res.statusCode,
-                headers: {
-                    'content-type': res.headers['content-type'],
-                },
-            }),
-        },
-    });
-
     // Add request ID for correlation
-    fastify.addHook('onRequest', async (request, reply) => {
+    fastify.addHook('onRequest', async (request) => {
         request.id = request.headers['x-request-id'] as string || generateRequestId();
     });
 
@@ -50,12 +15,18 @@ export const loggingPlugin: FastifyPluginAsync = fp(async (fastify) => {
     fastify.addHook('onResponse', async (request, reply) => {
         const duration = reply.getResponseTime();
 
-        request.log.info({
-            req: request,
-            res: reply,
+        fastify.log.info({
+            req: {
+                method: request.method,
+                url: request.url,
+                id: request.id,
+            },
+            res: {
+                statusCode: reply.statusCode,
+            },
             duration,
-            tenantId: request.tenantId,
-            userId: request.user?.id,
+            tenantId: (request as any).tenantId,
+            userId: (request as any).user?.id,
         }, 'Request completed');
     });
 });

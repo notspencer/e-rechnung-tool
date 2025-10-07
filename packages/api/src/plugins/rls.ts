@@ -5,6 +5,7 @@
 import { FastifyPluginAsync } from 'fastify';
 import fp from 'fastify-plugin';
 import { db } from '../db/client.js';
+import { sql } from 'drizzle-orm';
 
 declare module 'fastify' {
     interface FastifyRequest {
@@ -14,13 +15,13 @@ declare module 'fastify' {
 
 export const rlsPlugin: FastifyPluginAsync = fp(async (fastify) => {
     // Add hook to set tenant context for RLS
-    fastify.addHook('onRequest', async (request, reply) => {
+    fastify.addHook('onRequest', async (request) => {
         // Extract tenant ID from request context
         const tenantId = extractTenantId(request);
 
         if (tenantId) {
             // Set session variable for RLS
-            await db.execute(`SET LOCAL app.tenant_id = '${tenantId}'`);
+            await db.execute(sql`SET LOCAL app.tenant_id = ${tenantId}`);
             request.tenantId = tenantId;
         }
     });
