@@ -5,15 +5,11 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema.js';
+import { env } from '../config/env.js';
 
 // Create postgres client
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-    throw new Error('DATABASE_URL environment variable is required');
-}
-
-const client = postgres(connectionString, {
-    max: parseInt(process.env.DATABASE_POOL_MAX || '10'),
+const client = postgres(env.DATABASE_URL, {
+    max: env.DATABASE_POOL_MAX,
 });
 
 // Create drizzle instance
